@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en-us" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<title>ENCRYTP IT</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css">
+	<link href="jquery-ui.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<style>
+		 html{
+                line-height: 1;
+            }
+		header{
+                border-bottom: 1px solid rgb(29, 29, 102);
+                display: grid;
+                grid-template-columns: auto auto;
+                align-items: self-end;
+                justify-content: space-between;
+                gap: 7px;
+                padding-top: 20px;
+                padding-bottom: 10px;
+            }
+		body{
+			font-family: "Trebuchet MS", sans-serif;
+			margin: 50px;
+			background-color: rgb(212, 210, 219);
+            max-width: 960px;
+            color: #525252;
+            font-family: Roboto, sans-serif;
+            margin: 0 auto;
+		}
+		.demoHeaders {
+			margin-top: 2em;
+		}
+		#dialog-link {
+			padding: .4em 1em .4em 20px;
+			text-decoration: none;
+			position: relative;
+		}
+		#dialog-link span.ui-icon {
+			margin: 0 5px 0 0;
+			position: absolute;
+			left: .2em;
+			top: 50%;
+			margin-top: -8px;
+		}
+		#icons {
+			margin: 0;
+			padding: 0;
+		}
+		#icons li {
+			margin: 2px;
+			position: relative;
+			padding: 4px 0;
+			cursor: pointer;
+			float: left;
+			list-style: none;
+		}
+		#icons span.ui-icon {
+			float: left;
+			margin: 0 4px;
+		}
+		.fakewindowcontain .ui-widget-overlay {
+			position: absolute;
+		}
+		select {
+			width: 200px;
+		}
+		main {
+            text-align: center;
+            padding: 0 25px;
+            }
+        footer {
+            display: grid;
+            grid-template-columns: 1fr 0 0;
+            gap: 5px;
+            padding: 0 10px;
+            position: fixed;
+            box-sizing: border-box;
+            left: 50%;
+            bottom: 0;
+            width: 960px;
+            transform: translateX(-50%);
+            transform-style: preserve-3d;
+            border-top: 1px solid #efefef;
+            width: 100%;
+            margin-top: 5px;
+			color: blueviolet;
+          }
+          h1{
+            color: blue;
+            text-align: center;
+          }
+          p{
+            color: blue;
+            font-size: 23px;
+          }
+		  .txt{
+			height: 100px;
+			padding: 6px 12px;
+			font-size: 14px;
+			line-height: 2;
+			color: #555555;
+			background-color: #fff;
+			background-image: none;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		  }
+		  *{
+			box-sizing: content-box;
+		  }
+		</style>
+
+		<script>
+
+			var Alph = new Array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+			var SimpleAlph = new Array('a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+
+			function CeaserCipherEncrypt (){
+				var CipherText="";
+				var key=$('#CeaserKey').val()-0;
+				var plaintext = $('#txtarea1').val().toLowerCase();
+			
+				for(var x=0; x<plaintext.length; x++){
+					temp=Alph.indexOf(plaintext.charAt(x))-0;
+					index = ((key+temp)%26);
+					CipherText += Alph[index];
+				}
+				CipherText = CipherText.toUpperCase();
+				$('#txtarea2').val(CipherText);
+			}
+
+			function CeaserCipherDecrypt (){
+				var CipherText=$('#txtarea2').val().toLowerCase();
+				var key=$('#CeaserKey').val()-0;
+				var plaintext = "";
+			
+				for(var x=0; x<CipherText.length; x++){
+					temp=Alph.indexOf(CipherText.charAt(x))-0;
+					index = ((temp-key)%26);
+					plaintext += Alph[index];
+				}
+				plaintext = plaintext.toLowerCase();
+				$('#txtarea1').val(plaintext);
+			}
+
+
+			PlayFairEncrypt = function(){
+				var setKey = new Array();
+				var plaintextArray = new Array();
+				var CipherText="";
+				var key=$('#PlayFairKey').val().toLowerCase();
+				var plaintext = $('#txtarea21').val().toLowerCase();
+
+
+				//to remove repeated letter from key
+				function notRepeated(arr,ch){
+					for(var i=0;i<arr.length;i++){
+						if(arr[i]==ch){
+							return true
+						}
+					}
+					return false;
+				}
+
+				var tempKey = new Array(key.charAt(0));
+				var countOfDeletedItem = 0;
+				for(var i=1;i<key.length;i++){
+					if(notRepeated(tempKey,key.charAt(i))){
+						countOfDeletedItem++;
+						continue;
+					}
+					else{
+						tempKey[i-countOfDeletedItem]=key.charAt(i);
+					}
+					
+				}
+
+                //to change all i in Key with j
+				for(var i=0;i<tempKey.length;i++){
+					if(tempKey[i]=='i'){
+					setKey[i]='j';
+					}
+					else{
+					setKey[i]=tempKey[i];
+					}	
+				}
+
+
+
+				//to change all i in plaintext with j
+				for(var i=0;i<plaintext.length;i++){
+					if(plaintext[i]=='i'){
+					plaintextArray[i]='j';
+					}
+					else{
+					plaintextArray[i]=plaintext[i];
+					}	
+				} 
+
+				 
+				// to add letter X between two samilar letters like => LL will be => LXL
+				var PerfectPlaintext=new Array();
+				var countOfNewIteam=0;
+				for(var i=0;i<plaintextArray.length+countOfNewIteam;i+=2){
+					if(plaintextArray[i-countOfNewIteam]==plaintextArray[i+1-countOfNewIteam]){
+						PerfectPlaintext[i]=plaintextArray[i-countOfNewIteam];
+						PerfectPlaintext[i+1]='x';
+						countOfNewIteam++;
+					}
+					else{
+						PerfectPlaintext[i]=plaintextArray[i-countOfNewIteam];
+						PerfectPlaintext[i+1]=plaintextArray[i+1-countOfNewIteam];
+					}
+				}
+
+
+				//to add letter X to the odd plaintext
+				if(PerfectPlaintext.length % 2 > 0){
+					PerfectPlaintext.push('x');
+				}
+
+
+				//to check if the letter founded in key or not
+				function foundedInKey(ch){
+					for(var x=0;x<setKey.length;x++){
+						if(ch == setKey[x]){
+							return true;
+						}
+					}
+					return false;
+				}
+
+				// to make a matrix 5*5
+				var matrix = new Array(Array(5),Array(5),Array(5),Array(5),Array(5));
+				var count=0;
+				var AlphCount=0;
+				for(var x=0; x<5; x++){
+					for(var y=0;y<5;y++){
+						if(count<setKey.length){
+							matrix[x][y]=setKey[count];
+							count++;
+						}
+						else if((count >= setKey.length)){
+							while(foundedInKey(SimpleAlph[AlphCount])){
+								AlphCount++
+							}
+						    matrix[x][y]=SimpleAlph[AlphCount];
+							AlphCount++;
+						}
+							
+					}
+						
+				}
+				
+
+				//
+                var v1, v2, xv1, yv1, xv2, yv2;
+				for(var k=0;k<PerfectPlaintext.length;k+=2){
+					v1=PerfectPlaintext[k];
+					v2=PerfectPlaintext[k+1];
+					xv1=-1;
+				    yv1=-1;
+				    xv2=-1;
+				    yv2=-1;
+					for(var x1=0;x1<5;x1++){
+						for(var x2=0;x2<5;x2++){
+							if((xv1 > -1) & (xv2 > -1)){
+								break;
+							}
+							else if(v1==matrix[x1][x2]){
+									xv1=x1;
+									yv1=x2;
+							}
+							else if(v2==matrix[x1][x2]){
+									xv2=x1;
+									yv2=x2;
+								
+							}
+							
+						}
+					}
+					console.log(v1,v2,xv1,yv1,xv2,yv2);
+					if(yv1==yv2){
+						CipherText += matrix[(xv1+1)%5][yv1];
+						console.log(CipherText);
+						CipherText += matrix[(xv2+1)%5][yv2];
+						console.log(CipherText);
+					}
+					else if(xv1==xv2){
+						CipherText += matrix[xv1][(yv1+1)%5];
+						console.log(CipherText);
+						CipherText += matrix[xv2][(yv2+1)%5];
+						console.log(CipherText);
+					}
+					else{
+						CipherText += matrix[xv1][yv2];
+						console.log(CipherText);
+						CipherText += matrix[xv2][yv1];
+						console.log(CipherText);
+					}
+					
+				}
+				
+				console.log(CipherText);
+				CipherText = CipherText.toUpperCase();
+				$('#txtarea22').val(CipherText);
+			}
+
+			PlayFairDecrypt = function(){
+				var setKey = new Array();
+				var plaintextArray = new Array();
+				var CipherText=$('#txtarea22').val().toLowerCase();;
+				var key=$('#PlayFairKey').val().toLowerCase();
+				var plaintext = "";
+
+
+				//to remove repeated letter from key
+				function notRepeated(arr,ch){
+					for(var i=0;i<arr.length;i++){
+						if(arr[i]==ch){
+							return true
+						}
+					}
+					return false;
+				}
+
+				var tempKey = new Array(key.charAt(0));
+				var countOfDeletedItem = 0;
+				for(var i=1;i<key.length;i++){
+					if(notRepeated(tempKey,key.charAt(i))){
+						countOfDeletedItem++;
+						continue;
+					}
+					else{
+						tempKey[i-countOfDeletedItem]=key.charAt(i);
+					}
+					
+				}
+
+                //to change all i in Key with j
+				for(var i=0;i<tempKey.length;i++){
+					if(tempKey[i]=='i'){
+					setKey[i]='j';
+					}
+					else{
+					setKey[i]=tempKey[i];
+					}	
+				}
+
+
+
+				//to change all i in plaintext with j
+				for(var i=0;i<CipherText.length;i++){
+					if(CipherText[i]=='i'){
+					plaintextArray[i]='j';
+					}
+					else{
+					plaintextArray[i]=CipherText[i];
+					}	
+				} 
+
+				var PerfectPlaintext = plaintextArray;
+				 /*
+				// to add letter X between two samilar letters like => LL will be => LXL
+				var PerfectPlaintext=new Array();
+				var countOfNewIteam=0;
+				for(var i=0;i<plaintextArray.length;i++){
+					if(plaintextArray[i]==plaintextArray[i+1]){
+						PerfectPlaintext[i+countOfNewIteam]=plaintextArray[i];
+						countOfNewIteam++;
+						PerfectPlaintext[i+countOfNewIteam]='x';
+					}
+					else{
+						PerfectPlaintext[i+countOfNewIteam]=plaintextArray[i];
+					}
+				}
+
+
+				//to add letter X to the odd plaitext
+				if(PerfectPlaintext.length % 2 > 0){
+					PerfectPlaintext.push('x');
+				}*/
+
+
+				//to check if the letter founded in key or not
+				function foundedInKey(ch){
+					for(var x=0;x<setKey.length;x++){
+						if(ch == setKey[x]){
+							return true;
+						}
+					}
+					return false;
+				}
+
+				// to make a matrix 5*5
+				var matrix = new Array(Array(5),Array(5),Array(5),Array(5),Array(5));
+				var count=0;
+				var AlphCount=0;
+				for(var x=0; x<5; x++){
+					for(var y=0;y<5;y++){
+						if(count<setKey.length){
+							matrix[x][y]=setKey[count];
+							count++;
+						}
+						else if((count >= setKey.length)){
+							while(foundedInKey(SimpleAlph[AlphCount])){
+								AlphCount++
+							}
+						    matrix[x][y]=SimpleAlph[AlphCount];
+							AlphCount++;
+						}
+							
+					}
+						
+				}
+				
+
+				//
+                var v1, v2, xv1, yv1, xv2, yv2;
+				for(var k=0;k<PerfectPlaintext.length;k+=2){
+					v1=PerfectPlaintext[k];
+					v2=PerfectPlaintext[k+1];
+					xv1=-1;
+				    yv1=-1;
+				    xv2=-1;
+				    yv2=-1;
+					for(var x1=0;x1<5;x1++){
+						for(var x2=0;x2<5;x2++){
+							if((xv1 > -1) & (xv2 > -1)){
+								break;
+							}
+							else if(v1==matrix[x1][x2]){
+									xv1=x1;
+									yv1=x2;
+							}
+							else if(v2==matrix[x1][x2]){
+									xv2=x1;
+									yv2=x2;
+								
+							}
+							
+						}
+					}
+					console.log(matrix);
+					console.log(v1,v2,xv1,yv1,xv2,yv2);
+					if(yv1==yv2){
+						plaintext += matrix[(xv1-1)%5][yv1%5];
+						console.log(plaintext);
+						plaintext += matrix[(xv2-1)%5][yv2%5];
+						console.log(plaintext);
+					}
+					else if(xv1==xv2){
+						plaintext += matrix[xv1%5][(yv1-1)%5];
+						console.log(plaintext);
+						plaintext += matrix[xv2%5][(yv2-1)%5];
+						console.log(plaintext);
+					}
+					else{
+						plaintext += matrix[xv1%5][yv2%5];
+						console.log(plaintext);
+						plaintext += matrix[xv2%5][yv1%5];
+						console.log(plaintext);
+					}
+					
+				}
+				
+				console.log(plaintext);
+				plaintext = plaintext.toLowerCase();
+				$('#txtarea21').val(plaintext);
+			}
+
+			TranspositionEncrypt = function() {
+				/*
+				var CipherText="";
+				var sortKey= Array();
+				var arrPlaintext =new Array();
+				var key = $('#TranspositionKey').val();				
+				var plaintext = $('#txtarea31').val().toLowerCase();
+				var matrix = new Array();
+
+                //to remove repeated letter from key
+                function notRepeated(arr,ch){
+					for(var i=0;i<arr.length;i++){
+						if(arr[i]==ch){
+							return true
+						}
+					}
+					return false;
+				}
+
+				var tempKey = new Array(key.charAt(0));
+				var countOfDeletedItem = 0;
+				for(var i=1;i<key.length;i++){
+					if(notRepeated(tempKey,key.charAt(i))){
+						countOfDeletedItem++;
+						continue;
+					}
+					else{
+						tempKey[i-countOfDeletedItem]=key.charAt(i);
+					}
+					
+				}
+
+				for(var i=0;i<tempKey.length;i++){
+					sortKey[i]=tempKey[i];
+				}
+				sortKey=sortKey.sort();
+
+				//to remove space from plaintext
+				var countOfSpace=0;
+				for(var x=0; x<plaintext.length; x++){
+					if((plaintext.charAt(x)==' ')){
+						countOfSpace++;
+						continue
+					}
+					else{
+						arrPlaintext[x-countOfSpace]=plaintext.charAt(x);
+					}
+				}
+
+				console.log(arrPlaintext);
+
+				//to make a matrix
+				var keyLength = tempKey.length;
+				for(var i=0;i<arrPlaintext.length+keyLength;i++){
+					if(i<keyLength){
+						matrix[i]=tempKey[i];
+					}
+					else{
+						matrix[i]=arrPlaintext[i-keyLength];
+					}
+				}
+				console.log(matrix);
+				var count=0;
+				var keyLength = tempKey.length;
+				for(var x=0; x<keyLength; x++){
+					while(count<keyLength){
+						if(arrPlaintext[matrix.indexOf(sortKey[i]) + (count*(keyLength))]==undefined){
+							break;
+						}
+						else{
+						CipherText += arrPlaintext[matrix.indexOf(sortKey[i]) + (count*(keyLength))];
+						count++;
+						console.log(CipherText);
+						console.log(count);
+						}
+					}
+					count = 0;
+				}
+
+
+				console.log(CipherText);
+				CipherText = CipherText.toUpperCase();
+				$('#txtarea32').val(CipherText);*/
+				
+			}
+			TranspositionDecrypt = function(){
+				
+			}
+
+			VigenereEncrypt = function(){
+				var CipherText="";
+				var key=$('#vigenereKey').val().toLowerCase();
+				var plaintext = $('#txtarea41').val().toLowerCase();
+				var arrkey = new Array();
+				for(i=0;i<plaintext.length;i++){
+					arrkey[i]=key.charAt((i%key.length));
+				}
+
+				var temp1 = -1;
+				var temp2= -1;
+				for(i=0;i<plaintext.length;i++){
+					temp1=Alph.indexOf(plaintext.charAt(i))-0;
+					temp2=Alph.indexOf(arrkey[i])-0;
+					CipherText += Alph[(temp1+temp2)%26];
+					
+				}
+
+
+				CipherText = CipherText.toUpperCase();
+				$('#txtarea42').val(CipherText);
+			}
+			
+			VigenereDecrypt = function(){
+				var CipherText=$('#txtarea42').val().toLowerCase();;
+				var key=$('#vigenereKey').val().toLowerCase();
+				var plaintext = "";
+				var arrkey = new Array();
+				for(i=0;i<CipherText.length;i++){
+					arrkey[i]=key.charAt((i%key.length));
+				}
+				
+				var temp1 = -1;
+				var temp2= -1;
+				var res=0;
+				for(i=0;i<CipherText.length;i++){
+					temp1=Alph.indexOf(CipherText.charAt(i))-0;
+					temp2=Alph.indexOf(arrkey[i])-0;
+					res=(temp1-temp2)%26;
+					if(res<0){
+						res=res+26;
+					}
+					plaintext += Alph[res];
+				}
+
+
+				plaintext = plaintext.toLowerCase();
+				$('#txtarea41').val(plaintext);
+			}
+
+			VernameEncrypt = function(){
+				
+			}
+			VernameDecrypt = function(){
+				
+			}
+
+			RailFenceEncrypt = function(){
+				var CipherText="";
+				var key=$('#RailFenceKey').val()-0;
+				var plaintext = $('#txtarea61').val().toLowerCase();
+				var arrPlaintext =new Array();
+				var lengthOfRow = 0;
+
+			
+				var countOfSpace=0;
+				for(var x=0; x<plaintext.length; x++){
+					if((plaintext.charAt(x)==' ')){
+						countOfSpace++;
+						continue
+					}
+					else{
+						arrPlaintext[x-countOfSpace]=plaintext.charAt(x);
+					}
+				}
+
+				var lengthMode = arrPlaintext.length % key;
+				var count = 0;
+				if( lengthMode>0){
+					lengthOfRow = ((arrPlaintext.length-lengthMode)/key)+1;
+				}
+				else{
+					lengthOfRow = (arrPlaintext.length/key);
+				}
+
+				while(count<key){
+					for(var x=0; x<arrPlaintext.length; x+=key){
+						if(arrPlaintext[x+count]==undefined){
+							break;
+						}
+						else{
+							CipherText += arrPlaintext[x+count];
+						    console.log(x+count);
+						}
+						
+					}
+					count++;
+				}
+
+
+				/*
+				for(var x=0; x<lengthOfRow; x++){
+					while(count<key){
+						CipherText += arrPlaintext[x + (count*(lengthOfRow))];
+						count++;
+						console.log(CipherText);
+						console.log(count);
+					}
+					count = 0;
+				}*/
+
+				CipherText = CipherText.toUpperCase();
+				$('#txtarea62').val(CipherText);
+			}
+			
+			RailFenceDecrypt = function(){
+				var CipherText=$('#txtarea62').val().toLowerCase();
+				var key=$('#RailFenceKey').val()-0;
+				var plaintext = "";
+				var lengthOfRow = 0;
+
+
+				var lengthMode = CipherText.length % key;
+				var count = 0;
+				if( lengthMode>0){
+					lengthOfRow = ((CipherText.length-lengthMode)/key)+1;
+				}
+				else{
+					lengthOfRow = (CipherText.length/key);
+				}
+
+				/*
+				while(count<key){
+					for(var x=0; x<CipherText.length; x+=key){
+						if(CipherText[x+count]==undefined){
+							break;
+						}
+						else{
+							plaintext += CipherText[x+count];
+						    console.log(x+count);
+						}
+						
+					}
+					count++;
+				}*/
+
+
+				
+				for(var x=0; x<lengthOfRow; x++){
+					while(count<key){
+						if(CipherText[x + (count*(lengthOfRow))]==undefined){
+							break;
+						}
+						else{
+							plaintext += CipherText[x + (count*(lengthOfRow))];
+						    count++;
+						    console.log(plaintext);
+						    console.log(count);
+						}
+					}
+					count = 0;
+				}
+
+				plaintext = plaintext.toLowerCase();
+				$('#txtarea61').val(plaintext);
+			}
+
+		</script>
+		
+	</head>
+	<body>
+		<center>
+            <h1><u><font size=7>ENCRYTP IT </font></u></h1>
+        </center>
+        <header>
+            <p>Choice the method of Encryption that you need</p>         
+        </header>
+        <main>
+			<!-- Tabs -->
+			<br>
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-1">Ceaser Cipher</a></li>
+					<li><a href="#tabs-2">Playfair</a></li>
+					<li><a href="#tabs-4">Vigenere</a></li>
+					<li><a href="#tabs-6">Rail Fence</a></li>
+					<li><a href="#tabs-3">Transposition</a></li>
+					<li><a href="#tabs-5">Vername</a></li>
+				</ul>
+				<div id="tabs-1">
+					<!--
+					<center>
+						<h1 style="margin-top: 2px; margin-bottom: 3px;"><u><font size=6>Ceaser Cipher</font></u></h1>
+					</center>
+					-->
+	                <span class="label label-primary">Key</span>
+					<input style="width:70%; display:inline-block " class="form-control" id="CeaserKey" placeholder="Enter Numeric Key" >
+					<br><br>
+					<span class="label label-primary">PlainText</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="label label-primary">CipherText</span>
+					<br><br>
+					<textarea name="txt1" class="txt" id="txtarea1" cols="30" rows="3" placeholder="PlainText appear here"></textarea>
+					<textarea name="txt2" class="txt" id="txtarea2" cols="30" rows="3" placeholder="CipherText appear here"></textarea>
+					<br><br>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="CeaserCipherEncrypt()">Encryption</button>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="CeaserCipherDecrypt()">Decryption</button>
+				</div>
+				<div id="tabs-2">
+					&nbsp;
+	                <span class="label label-primary">Key</span>
+					<input style="width:70%; display:inline-block " class="form-control" id="PlayFairKey" placeholder="Enter String Key">
+					<br><br>
+					<span class="label label-primary">PlainText</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="label label-primary">CipherText</span>
+					<br><br>
+					<textarea name="txt21" class="txt" id="txtarea21" cols="30" rows="3" placeholder="PlainText appear here"></textarea>
+					<textarea name="txt22" class="txt" id="txtarea22" cols="30" rows="3" placeholder="CipherText appear here"></textarea>
+					<br><br>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="PlayFairEncrypt()">Encryption</button>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="PlayFairDecrypt()">Decryption</button>
+				</div>
+				<div id="tabs-3">
+					<center>
+						<h1 style="margin-top: 5px; margin-bottom: 9px; color: maroon;"><u><font size=5>Sorry! This algorithm is not programmed yet</font></u></h1>
+					</center>
+					<!--
+					&nbsp;
+	                <span class="label label-primary">Key</span>
+					<input style="width:70%; display:inline-block " class="form-control" id="TranspositionKey" placeholder="Enter Numeric Key or String Key">
+					<br><br>
+					<span class="label label-primary">PlainText</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="label label-primary">CipherText</span>
+					<br><br>
+					<textarea name="txt31" class="txt" id="txtarea31" cols="30" rows="3" placeholder="PlainText appear here"></textarea>
+					<textarea name="txt32" class="txt" id="txtarea32" cols="30" rows="3" placeholder="CipherText appear here"></textarea>
+					<br><br>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="TranspositionEncrypt()">Encryption</button>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="TranspositionDecrypt()">Decryption</button>
+					-->
+				</div>
+				<div id="tabs-4">
+					&nbsp;
+	                <span class="label label-primary">Key</span>
+					<input style="width:70%; display:inline-block " class="form-control" id="vigenereKey" placeholder="Enter String Key">
+					<br><br>
+					<span class="label label-primary">PlainText</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="label label-primary">CipherText</span>
+					<br><br>
+					<textarea name="txt41" class="txt" id="txtarea41" cols="30" rows="3" placeholder="PlainText appear here"></textarea>
+					<textarea name="txt42" class="txt" id="txtarea42" cols="30" rows="3" placeholder="CipherText appear here"></textarea>
+					<br><br>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="VigenereEncrypt()">Encryption</button>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="VigenereDecrypt()">Decryption</button>
+				</div>
+				<div id="tabs-5">
+					<center>
+						<h1 style="margin-top: 5px; margin-bottom: 9px; color: maroon;"><u><font size=5>Sorry! This algorithm is not programmed yet</font></u></h1>
+					</center>
+
+
+					<!--
+					&nbsp;
+	                <span class="label label-primary">Key</span>
+					<input style="width:70%; display:inline-block " class="form-control" placeholder="Enter Binary Key">
+					<br><br>
+					<span class="label label-primary">PlainText</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="label label-primary">CipherText</span>
+					<br><br>
+					<textarea name="txt51" class="txt" id="txtarea51" cols="30" rows="3" placeholder="PlainText appear here"></textarea>
+					<textarea name="txt52" class="txt" id="txtarea52" cols="30" rows="3" placeholder="CipherText appear here"></textarea>
+					<br><br>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="VernameEncrypt()">Encryption</button>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="VernameDecrypt()">Decryption</button>
+					-->
+				</div>
+				<div id="tabs-6">
+					&nbsp;
+	                <span class="label label-primary">Key</span>
+					<input style="width:70%; display:inline-block " class="form-control" id="RailFenceKey" placeholder="Enter Numeric Key">
+					<br><br>
+					<span class="label label-primary">PlainText</span>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="label label-primary">CipherText</span>
+					<br><br>
+					<textarea name="txt61" class="txt" id="txtarea61" cols="30" rows="3" placeholder="PlainText appear here"></textarea>
+					<textarea name="txt62" class="txt" id="txtarea62" cols="30" rows="3" placeholder="CipherText appear here"></textarea>
+					<br><br>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="RailFenceEncrypt()">Encryption</button>
+					<button  style="width:25%;" align="center" class="btn btn-primary" onclick="RailFenceDecrypt()">Decryption</button>
+				</div>
+			</div>
+		</main>
+
+		<script src="external/jquery/jquery.js"></script>
+		<script src="jquery-ui.js"></script>
+		<script>
+		   $( "#tabs" ).tabs();
+		</script>
+	<footer>
+		<div>
+			<h4 style="color: #3f054b;">This site has programmed by Eng.Mohamed Reda Ali</h4>
+		</div>
+	
+	</footer>
+	</body>
+	</html>
